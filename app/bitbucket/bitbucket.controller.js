@@ -82,7 +82,7 @@ function processIssueCreated(inWebhook) {
 	embed.author.name = inWebhook.actor.display_name;
 	embed.author.url = inWebhook.actor.links.html.href;
 
-	embed.title = '[' + inWebhook.repository.full_name + '] Issue opened: #' + inWebhook.issue.id + ': ' + inWebhook.issue.title;
+	embed.title = '[' + inWebhook.repository.full_name + '] Issue opened: #' + inWebhook.issue.id + ' ' + inWebhook.issue.title;
 	embed.url = inWebhook.issue.links.html.href;
 	
 	embed.description = inWebhook.issue.content.raw;
@@ -129,7 +129,7 @@ function processIssueUpdated(inWebhook) {
 	embed.author.name = inWebhook.actor.display_name;
 	embed.author.url = inWebhook.actor.links.html.href;
 
-	embed.title = '[' + inWebhook.repository.full_name + '] Issue updated: #' + inWebhook.issue.id + ': ' + inWebhook.issue.title;
+	embed.title = '[' + inWebhook.repository.full_name + '] Issue updated: #' + inWebhook.issue.id + ' ' + inWebhook.issue.title;
 	embed.url = inWebhook.comment.links.html.href;
 	
 	embed.description = changes.join('\n');
