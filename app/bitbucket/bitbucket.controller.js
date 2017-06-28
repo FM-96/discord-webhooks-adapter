@@ -1,12 +1,12 @@
-module.exports.process = process;
+module.exports.handle = handle;
 
 var https = require('https');
 
-function process(req, res) {
+function handle(req, res) {
 	var inWebhook = req.body;
 	var outWebhook = null;
 
-	//find out what type of webhook it is
+	// find out what type of webhook it is
 	if (req.get('X-Event-Key') === 'issue:comment_created') {
 		outWebhook = processIssueCommentCreated(inWebhook);
 	} else if (req.get('X-Event-Key') === 'issue:created') {
@@ -21,16 +21,16 @@ function process(req, res) {
 	if (outWebhook) {
 		outWebhook.username = 'BitBucket';
 		outWebhook.avatar_url = 'https://www.brandeps.com/logo-download/B/Bitbucket-01.png';
-		
-		//send webhook to Discord API
+
+		// send webhook to Discord API
 		var requestOptions = {
 			method: 'POST',
 			hostname: 'discordapp.com',
 			port: 443,
 			path: '/api/webhooks/' + req.params.id + '/' + req.params.token,
 			headers: {
-				'Content-Type': 'application/json'
-			}
+				'Content-Type': 'application/json',
+			},
 		};
 		var request = https.request(requestOptions, function (response) {
 			var responseData = '';
@@ -52,53 +52,53 @@ function process(req, res) {
 
 function processIssueCommentCreated(inWebhook) {
 	var outWebhook = {
-		embeds: []
+		embeds: [],
 	};
-	var embed = { author: {} };
-	
+	var embed = {author: {}};
+
 	embed.author.icon_url = inWebhook.actor.links.avatar.href;
 	embed.author.name = inWebhook.actor.display_name;
 	embed.author.url = inWebhook.actor.links.html.href;
 
 	embed.title = '[' + inWebhook.repository.full_name + '] New comment on issue #' + inWebhook.issue.id + ': ' + inWebhook.issue.title;
 	embed.url = inWebhook.comment.links.html.href;
-	
+
 	embed.description = inWebhook.comment.content.raw;
-	
+
 	embed.color = 0xE68D60;
 
 	outWebhook.embeds.push(embed);
-	
+
 	return outWebhook;
 }
 
 function processIssueCreated(inWebhook) {
 	var outWebhook = {
-		embeds: []
+		embeds: [],
 	};
-	var embed = { author: {} };
-	
+	var embed = {author: {}};
+
 	embed.author.icon_url = inWebhook.actor.links.avatar.href;
 	embed.author.name = inWebhook.actor.display_name;
 	embed.author.url = inWebhook.actor.links.html.href;
 
 	embed.title = '[' + inWebhook.repository.full_name + '] Issue opened: #' + inWebhook.issue.id + ' ' + inWebhook.issue.title;
 	embed.url = inWebhook.issue.links.html.href;
-	
+
 	embed.description = inWebhook.issue.content.raw;
-	
+
 	embed.color = 0xEB6420;
 
 	outWebhook.embeds.push(embed);
-	
+
 	return outWebhook;
 }
 
 function processIssueUpdated(inWebhook) {
 	var outWebhook = {
-		embeds: []
+		embeds: [],
 	};
-	var embed = { author: {} };
+	var embed = {author: {}};
 
 	var changes = [];
 
@@ -124,16 +124,16 @@ function processIssueUpdated(inWebhook) {
 	if (inWebhook.changes.content) {
 		changes.push('• Edited description');
 	}
-	
+
 	embed.author.icon_url = inWebhook.actor.links.avatar.href;
 	embed.author.name = inWebhook.actor.display_name;
 	embed.author.url = inWebhook.actor.links.html.href;
 
 	embed.title = '[' + inWebhook.repository.full_name + '] Issue updated: #' + inWebhook.issue.id + ' ' + inWebhook.issue.title;
 	embed.url = inWebhook.comment.links.html.href;
-	
+
 	embed.description = changes.join('\n');
-	
+
 	embed.color = 0x4F545C;
 
 	outWebhook.embeds.push(embed);
