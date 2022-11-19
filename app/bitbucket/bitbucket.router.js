@@ -1,7 +1,7 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
-var bitbucketController = require('./bitbucket.controller.js');
+const bitbucketController = require('./bitbucket.controller.js');
 
 router.post('/:id/:token', bitbucketController.handle);
 

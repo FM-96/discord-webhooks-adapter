@@ -1,10 +1,10 @@
 module.exports.handle = handle;
 
-var https = require('https');
+const https = require('https');
 
 function handle(req, res) {
-	var inWebhook = req.body;
-	var outWebhook = null;
+	const inWebhook = req.body;
+	let outWebhook = null;
 
 	// find out what type of webhook it is
 	if (req.get('X-Event-Key') === 'issue:comment_created') {
@@ -23,7 +23,7 @@ function handle(req, res) {
 		outWebhook.avatar_url = 'https://www.brandeps.com/logo-download/B/Bitbucket-01.png';
 
 		// send webhook to Discord API
-		var requestOptions = {
+		const requestOptions = {
 			method: 'POST',
 			hostname: 'discordapp.com',
 			port: 443,
@@ -32,8 +32,8 @@ function handle(req, res) {
 				'Content-Type': 'application/json',
 			},
 		};
-		var request = https.request(requestOptions, function (response) {
-			var responseData = '';
+		const request = https.request(requestOptions, function (response) {
+			let responseData = '';
 
 			response.on('data', function (data) {
 				responseData += data;
@@ -51,10 +51,10 @@ function handle(req, res) {
 }
 
 function processIssueCommentCreated(inWebhook) {
-	var outWebhook = {
+	const outWebhook = {
 		embeds: [],
 	};
-	var embed = {author: {}};
+	const embed = {author: {}};
 
 	embed.author.icon_url = inWebhook.actor.links.avatar.href;
 	embed.author.name = inWebhook.actor.display_name;
@@ -73,10 +73,10 @@ function processIssueCommentCreated(inWebhook) {
 }
 
 function processIssueCreated(inWebhook) {
-	var outWebhook = {
+	const outWebhook = {
 		embeds: [],
 	};
-	var embed = {author: {}};
+	const embed = {author: {}};
 
 	embed.author.icon_url = inWebhook.actor.links.avatar.href;
 	embed.author.name = inWebhook.actor.display_name;
@@ -95,12 +95,12 @@ function processIssueCreated(inWebhook) {
 }
 
 function processIssueUpdated(inWebhook) {
-	var outWebhook = {
+	const outWebhook = {
 		embeds: [],
 	};
-	var embed = {author: {}};
+	const embed = {author: {}};
 
-	var changes = [];
+	const changes = [];
 
 	if (inWebhook.changes.status) {
 		changes.push('• Changed status to [' + inWebhook.changes.status.new + '](' + inWebhook.repository.links.html.href + '/issues?status=' + encodeURIComponent(inWebhook.changes.status.new).replace(/%20/g, '+') + ')');

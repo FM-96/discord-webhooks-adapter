@@ -1,4 +1,4 @@
-var bitbucketRouter = require('./bitbucket/bitbucket.router.js');
+const bitbucketRouter = require('./bitbucket/bitbucket.router.js');
 
 module.exports = function (app) {
 	app.use('/bitbucket', bitbucketRouter);
